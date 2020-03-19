@@ -1,0 +1,11 @@
+{% extends 'notetaking/base.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset>
+            {{ form|crispy }}
+        </fieldset>
+        <button>Sign up</button>
+    </form>
+{% endblock content %}

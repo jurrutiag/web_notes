@@ -1,0 +1,19 @@
+{% extends 'notetaking/base.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset>
+            {{ form|crispy }}
+        </fieldset>
+        <button>Create Note</button>
+    </form>
+
+    {% for note in notes %}
+        <div>
+            <h1>User: {{ note.username }}</h1>
+            <h2>Date: {{ note.date_created }}</h2>
+            <h3>Content: {{ note.content }}</h3>
+        </div>
+    {% endfor %}
+{% endblock content %}
