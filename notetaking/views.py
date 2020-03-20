@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from notetaking.forms import CreateNoteForm
 from notetaking.models import Note
 from django.shortcuts import redirect
