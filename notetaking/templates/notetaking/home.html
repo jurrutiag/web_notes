@@ -1,0 +1,67 @@
+{% extends 'notetaking/base.html' %}
+{% block content %}
+    <div class="col-12 bg-light h-100">
+        <div class='bg-white text-black row border rounded'>
+            <h3 class="col-6 pt-2">Pending</h3>
+            <button class="col-6 btn btn-outline-dark" onclick="location.href={% url 'notetaking-create' %}">New Note</button>
+        </div>
+        <div class="list-group row p-0" id="notas-div">
+
+            {% for note in notes %}
+                {% if note.is_pending %}
+                    <div class='list-group-item col-12 bg-light' id='$id' name='doneElems'>
+                        <div class='row bg-light'>
+                            <h5 class='col-8'>{{ note.title }}</h5>
+                            <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-2'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
+                            <a class='btn btn-light border col-2' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-check' id='cDone{{ note.id }}'></i></a>
+                        </div>
+                        <div class='text-secondary collapse' id='masInfoDone{{ note.id }}'>
+                            <div style="white-space: pre;">{{ note.content }}</div>
+                            <br>
+                            <small>
+                                Date: {{ note.date_created }}
+                            </small>
+                        </div>
+                        <small class='text-secondary'>User: {{ note.user.username }}</small>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+        <br>
+        <div class='bg-white text-black row border rounded'>
+            <h3 class="col-6 pt-2">Done</h3>
+            <button data-toggle='collapse' data-target='#notas-div-done' aria-expanded='true' aria-controls='notas-div-done' type='button' class='btn btn-light border border-dark col-4'><i class='fas fa-angle-down' id='icDone'></i></button>
+            <a class='btn btn-light border border-dark col-2' href="{% url 'notetaking-delete-nonpending' %}"><i class='fas fa-trash-alt pt-2'></i></a>
+        </div>
+        <div class='list-group row p-0 collapse show' id='notas-div-done'>
+            {% for note in notes %}
+                {% if not note.is_pending %}
+                    <div class='list-group-item col-12 bg-light' id='$id' name='doneElems'>
+                        <div class='row bg-light'>
+                            <h5 class='col-6'>{{ note.title }}</h5>
+                            <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-2'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
+                            <a class='btn btn-light border col-2' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-undo-alt'></i></a>
+                            <a class='btn btn-light border col-2' href="{% url 'notetaking-delete' note.id %}"><i class='fas fa-trash-alt'></i></a>
+                        </div>
+                        <div class='text-secondary collapse' id='masInfoDone{{ note.id }}'>
+                            <div>
+                                {{ note.content }}
+                            </div>
+                            <br>
+                            <small>
+                                Date: {{ note.date_created }}
+                            </small>
+                        </div>
+                        <small class='text-secondary'>User: {{ note.user.username }}</small>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script src="notes_interaction.js"></script>
+{% endblock extra_scripts %}

@@ -8,12 +8,4 @@
         </fieldset>
         <button>Create Note</button>
     </form>
-
-    {% for note in notes %}
-        <div>
-            <h1>User: {{ note.username }}</h1>
-            <h2>Date: {{ note.date_created }}</h2>
-            <h3>Content: {{ note.content }}</h3>
-        </div>
-    {% endfor %}
 {% endblock content %}
