@@ -1,6 +1,22 @@
 {% extends 'notetaking/base.html' %}
+{% load crispy_forms_filters %}
 {% block content %}
     <div class="col-12 bg-light h-100">
+        <div class="bg-white text-black row border rounded">
+            <h3 class="col-10">Filter</h3>
+            <button data-toggle='collapse' data-target='#filters' aria-expanded='true' aria-controls='filters' type='button' class='btn btn-light border border-dark col-2'><i class='fas fa-plus'></i></button>
+        </div>
+        <div class="row collapse" id="filters">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">{{ filter_form|crispy }}</div>
+                </div>
+                <div class="row">
+                    <button class="col-12 col-md-4 btn btn-light border border-dark ml-3" onclick="filter()">Filter</button>
+                </div>
+            </div>
+        </div>
+        <br>
         <div class='bg-white text-black row border rounded'>
             <h3 class="col-6 pt-2">Pending</h3>
             <button class="col-6 btn btn-outline-dark" onclick="location.href={% url 'notetaking-create' %}">New Note</button>
@@ -9,20 +25,43 @@
 
             {% for note in notes %}
                 {% if note.is_pending %}
-                    <div class='list-group-item col-12 bg-light' id='$id' name='doneElems'>
+                    <div class='list-group-item col-12 bg-light tag-{{ note.tag.name|cut:' '|lower }}' id='{{ note.id }}' name='pending-notes'>
                         <div class='row bg-light'>
-                            <h5 class='col-8'>{{ note.title }}</h5>
-                            <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-2'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
-                            <a class='btn btn-light border col-2' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-check' id='cDone{{ note.id }}'></i></a>
+                            <div class="col-8">
+                                <div class="row">
+                                    <h5 class='col'>{{ note.title }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-4'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
+                                    <a class='btn btn-light border col-4' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-check' id='cDone{{ note.id }}'></i></a>
+                                    <a class='btn btn-light border col-4' href="{% url 'notetaking-edit' note.id %}"><i class='fas fa-edit' id='cEdit{{ note.id }}'></i></a>
+                                </div>
+                            </div>
+
+
                         </div>
-                        <div class='text-secondary collapse' id='masInfoDone{{ note.id }}'>
-                            <div style="white-space: pre;">{{ note.content }}</div>
+                        <div class='text-secondary collapse row' id='masInfoDone{{ note.id }}'>
+                            <div class="col">
+                                <div class="row" style="white-space: pre;"><div class="col">{{ note.content }}</div></div>
                             <br>
-                            <small>
-                                Date: {{ note.date_created }}
+                            <small class="row">
+                                <div class="col">Date: {{ note.date_created }}</div>
                             </small>
+                            </div>
+
                         </div>
-                        <small class='text-secondary'>User: {{ note.user.username }}</small>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <small class='text-secondary col'>User: {{ note.user.username }}</small>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col"><a href="{% url 'notetaking-edit-tag' note.tag.name %}" class="btn-sm btn-light border border-dark text-decoration-none" style="background-color: {{ note.tag.color|cut:' ' }}; white-space:nowrap;"><small><i class='fas fa-circle fa-xs'></i> {{ note.tag.name }}</small></a></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -37,17 +76,25 @@
         <div class='list-group row p-0 collapse show' id='notas-div-done'>
             {% for note in notes %}
                 {% if not note.is_pending %}
-                    <div class='list-group-item col-12 bg-light' id='$id' name='doneElems'>
+                    <div class='list-group-item col-12 bg-light tag-{{ note.tag.name|cut:' ' }}' id='{{ note.id }}' name='done-notes'>
                         <div class='row bg-light'>
-                            <h5 class='col-6'>{{ note.title }}</h5>
-                            <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-2'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
-                            <a class='btn btn-light border col-2' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-undo-alt'></i></a>
-                            <a class='btn btn-light border col-2' href="{% url 'notetaking-delete' note.id %}"><i class='fas fa-trash-alt'></i></a>
+                            <div class="col-8">
+                                <div class="row">
+                                    <h5 class='col'>{{ note.title }} <a href="{% url 'notetaking-edit-tag' note.tag.name %}" class="btn-sm btn-light border border-dark ml-2 col text-decoration-none" style="background-color: {{ note.tag.color|cut:' ' }}; white-space:nowrap;"><small><i class='fas fa-circle fa-xs'></i> {{ note.tag.name }}</small></a></h5>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-4'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
+                                    <a class='btn btn-light border col-4' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-undo-alt'></i></a>
+                                    <a class='btn btn-light border col-4' href="{% url 'notetaking-delete' note.id %}"><i class='fas fa-trash-alt'></i></a>
+                                </div>
+                            </div>
+
+
                         </div>
                         <div class='text-secondary collapse' id='masInfoDone{{ note.id }}'>
-                            <div>
-                                {{ note.content }}
-                            </div>
+                            <div style="white-space: pre;">{{ note.content }}</div>
                             <br>
                             <small>
                                 Date: {{ note.date_created }}
@@ -63,5 +110,47 @@
 {% endblock content %}
 
 {% block extra_scripts %}
-    <script src="notes_interaction.js"></script>
+    <script>
+        function filter()
+        {
+            var notes = $("[name=pending-notes], [name=done-notes]");
+            var accepted_notes = [];
+            var rejected_notes = [];
+
+            // Filter by tag
+            var filtered_tag = $("#id_tag_choice").val();
+
+            if (filtered_tag === "")
+            {
+                accepted_notes = notes;
+            } else {
+                for (var note of notes)
+                {
+                    filtered_tag = filtered_tag.replace(/\s/g, '').toLowerCase();
+                    if ($(note).hasClass("tag-" + filtered_tag))
+                    {
+                        accepted_notes.push(note);
+
+                    } else {
+                        rejected_notes.push(note);
+                    }
+                }
+            }
+
+            // Filter
+            for (var note of rejected_notes)
+            {
+                if (!$(note).hasClass("d-none")) {
+                    $(note).addClass("d-none");
+                }
+            }
+
+            for (var note of accepted_notes)
+            {
+                if ($(note).hasClass("d-none")) {
+                    $(note).removeClass("d-none");
+                }
+            }
+        }
+    </script>
 {% endblock extra_scripts %}

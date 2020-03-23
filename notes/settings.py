@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -127,4 +127,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'notetaking-home'
 LOGIN_URL = 'login'
 
-ALLOWED_HOSTS = ['192.168.0.15', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.13', 'localhost']

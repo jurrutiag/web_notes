@@ -1,0 +1,35 @@
+{% extends 'notetaking/base.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="col-12">
+        <div class="row">
+            <form class="col-12" method="POST" id="create-tag">
+                {% csrf_token %}
+                <fieldset>
+                    {{ form|crispy }}
+                </fieldset>
+            </form>
+        </div>
+        <div class="row">
+            <label class="form-text col-4 col-md-2">Tag Preview:</label>
+            <button class="btn btn-light border border-dark" id="preview-label" style="background-color: {{ form.color.value|cut:' ' }}">{{ form.name.value }}</button>
+        </div>
+        <br>
+        <br>
+        <div class="row justify-content-around justify-content-md-start">
+            <button class="btn btn-light border border-dark col-md-2 mr-md-3 ml-md-3 col-5" type="submit" form="create-tag">Confirm</button>
+            <a class="btn btn-light border border-dark col-md-2 col-5" href="{% url 'notetaking-home' %}">Cancel</a>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        $("form select[name='color']").change(function () {
+            $("#preview-label").css({"background-color": $("form select[name='color']").val().toLowerCase().replace( /\s/g, '')});
+        });
+        $("form input[name='name']").keyup(function () {
+            $("#preview-label").html($("form input[name='name']").val());
+        });
+    </script>
+{% endblock extra_scripts %}
