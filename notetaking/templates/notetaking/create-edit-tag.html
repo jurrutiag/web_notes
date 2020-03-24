@@ -18,7 +18,7 @@
         <br>
         <div class="row justify-content-around justify-content-md-start">
             <button class="btn btn-light border border-dark col-md-2 mr-md-3 ml-md-3 col-5" type="submit" form="create-tag">Confirm</button>
-            <a class="btn btn-light border border-dark col-md-2 col-5" href="{% url 'notetaking-home' %}">Cancel</a>
+            <button class="btn btn-light border border-dark col-md-2 col-5" onclick="document.history.back">Cancel</button>
         </div>
     </div>
 {% endblock content %}
