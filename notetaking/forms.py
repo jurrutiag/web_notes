@@ -36,4 +36,3 @@ class TagForm(ModelForm):
 
 class FilterForm(Form):
     tag_choice = ModelChoiceField(Tag.objects, empty_label="All", label="By Tag:", required=False)
-

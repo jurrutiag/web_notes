@@ -127,4 +127,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'notetaking-home'
 LOGIN_URL = 'login'
 
-ALLOWED_HOSTS = ['192.168.0.13', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.12', 'localhost']

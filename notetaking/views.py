@@ -31,7 +31,9 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['filter_form'] = FilterForm()
+        filter_form = FilterForm()
+        filter_form.fields['tag_choice'].initial = self.request.GET.get('tag', "")
+        context['filter_form'] = filter_form
 
         return context
 
