@@ -3,7 +3,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, ListView, UpdateView
 from notetaking.forms import NoteForm, TagForm, FilterForm
 from notetaking.models import Note, Tag
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, reverse
 
 
 class CreateNoteView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
