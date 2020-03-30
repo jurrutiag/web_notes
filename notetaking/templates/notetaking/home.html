@@ -3,7 +3,7 @@
 {% block content %}
     <div class="col-12 bg-light h-100">
         <div class="bg-white text-black row border rounded">
-            <h3 class="col-10">Filter</h3>
+            <h3 class="col-10 pt-2">Filter</h3>
             <button data-toggle='collapse' data-target='#filters' aria-expanded='true' aria-controls='filters' type='button' class='btn btn-light border border-dark col-2'><i class='fas fa-plus'></i></button>
         </div>
         <div class="row collapse show" id="filters">
@@ -20,51 +20,46 @@
         <br>
         <div class='bg-white text-black row border rounded'>
             <h3 class="col-6 pt-2">Pending</h3>
-            <button class="col-6 btn btn-outline-dark" onclick="location.href={% url 'notetaking-create' %}">New Note</button>
+            <button data-toggle='collapse' data-target='#new-note' aria-expanded='true' aria-controls='new-note' type='button' class='btn btn-light border border-dark col-3'>New Note</button>
+            <button data-toggle='collapse' data-target='#new-tag' aria-expanded='true' aria-controls='new-tag' type='button' class='btn btn-light border border-dark col-3'>New Tag</button>
+            <!--<button class="col-6 btn btn-outline-dark" onclick="location.href={% url 'notetaking-create' %}">New Note</button>-->
         </div>
-        <div class="list-group row p-0" id="notas-div">
+        <div class="bg-white text-black row border rounded collapse" id="new-note">
+            <div class="col-12">
+                <form id="new-note-form" method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                        {{ new_note_form|crispy }}
+                    </fieldset>
+                </form>
+            </div>
+            <div class="col-12 justify-content-center justify-content-md-start">
+                <button class="btn btn-light border border-dark col-12 col-md-4 mb-3" type="submit" form="new-note-form">Create</button>
+            </div>
+        </div>
+        <div class="bg-white text-black row border rounded collapse" id="new-tag">
+            <div class="col-12">
+                <form id="new-tag-form" method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                        {{ new_tag_form|crispy }}
+                    </fieldset>
+                </form>
+                <div class="row mb-2 justify-content-start">
+                    <label class="form-text col-4 col-md-2">Tag Preview:</label>
+                    <button class="btn btn-light border border-dark" id="preview-label" style="background-color: {{ form.color.value|cut:' ' }}; min-width: 25%">{{ form.name.value }}</button>
+                </div>
+            </div>
+            <div class="col-12 justify-content-center justify-content-md-start">
+                <button class="btn btn-light border border-dark col-12 col-md-4 mb-3" type="submit" form="new-tag-form">Create</button>
+            </div>
+        </div>
+        <div class="list-group row p-0" id="notas-pending-div">
 
             {% for note in notes %}
                 {% if note.is_pending %}
                     {% if not 'tag' in request.GET or request.GET.tag == note.tag.name %}
-                        <div class='list-group-item col-12 bg-light tag-{{ note.tag.name|cut:' '|lower }}' id='{{ note.id }}' name='pending-notes'>
-                            <div class='row bg-light'>
-                                <div class="col-8">
-                                    <div class="row">
-                                        <h5 class='col'>{{ note.title }}</h5>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="row">
-                                        <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-4'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
-                                        <a class='btn btn-light border col-4' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-check' id='cDone{{ note.id }}'></i></a>
-                                        <a class='btn btn-light border col-4' href="{% url 'notetaking-edit' note.id %}"><i class='fas fa-edit' id='cEdit{{ note.id }}'></i></a>
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <div class='text-secondary collapse row' id='masInfoDone{{ note.id }}'>
-                                <div class="col">
-                                    <div class="row" style="white-space: pre;"><div class="col">{{ note.content }}</div></div>
-                                <br>
-                                <small class="row">
-                                    <div class="col">Date: {{ note.date_created }}</div>
-                                </small>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <small class='text-secondary col'>User: {{ note.user.username }}</small>
-                                    </div>
-                                    <div class="row mt-1">
-                                        <div class="col"><a href="{% url 'notetaking-edit-tag' note.tag.name %}" class="btn-sm btn-light border border-dark text-decoration-none" style="background-color: {{ note.tag.color|cut:' ' }}; white-space:nowrap;"><small><i class='fas fa-circle fa-xs'></i> {{ note.tag.name }}</small></a></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {% include 'notetaking/note-template.html' with note=note pending=True %}
                     {% endif %}
                 {% endif %}
             {% endfor %}
@@ -74,37 +69,14 @@
         <div class='bg-white text-black row border rounded'>
             <h3 class="col-6 pt-2">Done</h3>
             <button data-toggle='collapse' data-target='#notas-div-done' aria-expanded='true' aria-controls='notas-div-done' type='button' class='btn btn-light border border-dark col-4'><i class='fas fa-angle-down' id='icDone'></i></button>
-            <a class='btn btn-light border border-dark col-2' href="{% url 'notetaking-delete-nonpending' %}"><i class='fas fa-trash-alt pt-2'></i></a>
+            <button class='btn btn-light border border-dark col-2' onclick="delete_non_pending()"><i class='fas fa-trash-alt pt-2'></i></button>
         </div>
-        <div class='list-group row p-0 collapse show' id='notas-div-done'>
+        <div class='list-group row p-0 collapse show' id='notas-done-div'>
             {% for note in notes %}
                 {% if not note.is_pending %}
-                    <div class='list-group-item col-12 bg-light tag-{{ note.tag.name|cut:' ' }}' id='{{ note.id }}' name='done-notes'>
-                        <div class='row bg-light'>
-                            <div class="col-8">
-                                <div class="row">
-                                    <h5 class='col'>{{ note.title }} <a href="{% url 'notetaking-edit-tag' note.tag.name %}" class="btn-sm btn-light border border-dark ml-2 col text-decoration-none" style="background-color: {{ note.tag.color|cut:' ' }}; white-space:nowrap;"><small><i class='fas fa-circle fa-xs'></i> {{ note.tag.name }}</small></a></h5>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="row">
-                                    <button data-toggle='collapse' data-target='#masInfoDone{{ note.id }}' aria-expanded='true' aria-controls='masInfoDone{{ note.id }}' type='button' class='btn btn-light border col-4'><i class='fas fa-angle-down' id='aDone{{ note.id }}'></i></button>
-                                    <a class='btn btn-light border col-4' href="{% url 'notetaking-check' note.id %}"><i class='fas fa-undo-alt'></i></a>
-                                    <a class='btn btn-light border col-4' href="{% url 'notetaking-delete' note.id %}"><i class='fas fa-trash-alt'></i></a>
-                                </div>
-                            </div>
-
-
-                        </div>
-                        <div class='text-secondary collapse' id='masInfoDone{{ note.id }}'>
-                            <div style="white-space: pre;">{{ note.content }}</div>
-                            <br>
-                            <small>
-                                Date: {{ note.date_created }}
-                            </small>
-                        </div>
-                        <small class='text-secondary'>User: {{ note.user.username }}</small>
-                    </div>
+                    {% if not 'tag' in request.GET or request.GET.tag == note.tag.name %}
+                        {% include 'notetaking/note-template.html' with note=note pending=False %}
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
@@ -129,46 +101,138 @@
             window.location.href = "{% url 'notetaking-home' %}" + redirect_vars;
         }
 
-        function filter2()
-        {
-            var notes = $("[name=pending-notes], [name=done-notes]");
-            var accepted_notes = [];
-            var rejected_notes = [];
+        function check_note(note_id) {
+            $.ajax({
+                url: '{% url 'notetaking-check' %}?note_id=' + note_id,
+                type: 'GET',
+                success: function(json) {
+                    $("#" + note_id).remove();
+                    var div_id;
+                    if (json['pending'])
+                        div_id = "#notas-pending-div";
 
-            // Filter by tag
-            var filtered_tag = $("#id_tag_choice").val();
+                    else
+                        div_id = "#notas-done-div";
 
-            if (filtered_tag === "")
-            {
-                accepted_notes = notes;
-            } else {
-                for (var note of notes)
-                {
-                    filtered_tag = filtered_tag.replace(/\s/g, '').toLowerCase();
-                    if ($(note).hasClass("tag-" + filtered_tag))
-                    {
-                        accepted_notes.push(note);
+                    $(div_id).prepend(
+                        json['note']
+                    );
+                },
 
-                    } else {
-                        rejected_notes.push(note);
-                    }
-                }
-            }
-
-            // Filter
-            for (var note of rejected_notes)
-            {
-                if (!$(note).hasClass("d-none")) {
-                    $(note).addClass("d-none");
-                }
-            }
-
-            for (var note of accepted_notes)
-            {
-                if ($(note).hasClass("d-none")) {
-                    $(note).removeClass("d-none");
-                }
-            }
+                error: function(xhr, errmsg, err) {
+                    console.log('err');
+                },
+            });
         }
+
+        function delete_note(note_id) {
+            $.ajax({
+                url: '{% url 'notetaking-delete' %}?note_id=' + note_id,
+                type: 'GET',
+                success: function(json) {
+                    $("#" + note_id).remove();
+                },
+
+                error: function(xhr, errmsg, err) {
+                    console.log('err');
+                },
+            });
+        }
+
+        function delete_non_pending() {
+            $.ajax({
+                url: '{% url 'notetaking-delete-nonpending' %}',
+                type: 'GET',
+                success: function(json) {
+                    $("#notas-done-div").html("");
+                },
+
+                error: function(xhr, errmsg, err) {
+                    console.log('err');
+                },
+            });
+        }
+
+        $("#new-tag").on("show.bs.collapse", function () {
+                $("#new-note").collapse('hide');
+            }
+        )
+
+        $("#new-note").on("show.bs.collapse", function () {
+                $("#new-tag").collapse('hide');
+            }
+        )
+
+        $("form select[name='color']").change(function () {
+            $("#preview-label").css({"background-color": $("form select[name='color']").val().toLowerCase().replace( /\s/g, '')});
+        });
+
+        $("form input[name='name']").keyup(function () {
+            $("#preview-label").html($("form input[name='name']").val());
+        });
+
+        function update_messages(json) {
+            $("#message-container").html(
+                    json.message
+            );
+        }
+
+        $(document).on('submit', '#new-note-form', function (e) {
+            e.preventDefault();
+            $.ajax({
+                    url: '{% url 'notetaking-create' %}',
+                    type: 'POST',
+                    data:  {
+                        title: $("#id_title").val(),
+                        content: $("#id_content").val(),
+                        tag: $("#id_tag").val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        action: 'post',
+                    },
+                    success: function(json) {
+                        $("#notas-pending-div").prepend(
+                            json['note']
+                        );
+
+                        $("#id_title").val("");
+
+                        update_messages(json);
+                    },
+
+                    error: function(xhr, errmsg, err) {
+                        console.log(errmsg);
+                    }
+                });
+        });
+
+        $(document).on('submit', '#new-tag-form', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '{% url 'notetaking-create-tag' %}',
+                type: 'POST',
+                data:  {
+                    name: $("#id_name").val(),
+                    color: $("#id_color").val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'post',
+                },
+                success: function(json) {
+                    if (json.valid) {
+                        $("#id_name").val("");
+
+                        $("#id_tag").append(
+                            $("<option>", {"value": json.tag_name, "html": json.tag_name})
+                        );
+                    }
+
+                    update_messages(json);
+                },
+
+                error: function(xhr, errmsg, err) {
+                    console.log(errmsg);
+                }
+            });
+        });
+
     </script>
 {% endblock extra_scripts %}
