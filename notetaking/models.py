@@ -12,7 +12,7 @@ class Color(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=100, primary_key=True, error_messages={'unique': '%(model_name)s tag already exist.'})
     color = models.ForeignKey(Color, on_delete=models.CASCADE, default="Gray")
 
     def __str__(self):
@@ -30,6 +30,8 @@ class Note(models.Model):
     date_created = models.DateTimeField(auto_now=True)
     is_pending = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = (('title', 'tag'),)
 
     def __str__(self):
         return self.title

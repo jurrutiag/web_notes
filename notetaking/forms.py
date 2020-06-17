@@ -1,11 +1,12 @@
 from django.forms import CharField, ModelForm, Textarea, ModelChoiceField, TextInput, Form
 from django.contrib.auth.models import User
 from notetaking.models import Note, Tag, Color
+from django.core.exceptions import NON_FIELD_ERRORS
 
 
 class NoteForm(ModelForm):
-    title = CharField(max_length=100, required=True, widget=TextInput(attrs={'autofocus': 'autofocus'}))
-    content = CharField(widget=Textarea, max_length=300, required=False)
+    title = CharField(max_length=100, required=True, widget=TextInput(attrs={'autofocus': 'autofocus', 'autocomplete': 'off'}))
+    content = CharField(widget=Textarea(attrs={'autocomplete': 'off'}), max_length=300, required=False)
     tag = ModelChoiceField(Tag.objects)
 
     def __init__(self, *args, **kwargs):
@@ -23,10 +24,15 @@ class NoteForm(ModelForm):
     class Meta:
         model = Note
         fields = ['title', 'content', 'tag']
+        error_messages = {
+            NON_FIELD_ERRORS: {
+                'unique_together': '%(model_title)s note with %(model_tag)s tag already exist.',
+            }
+        }
 
 
 class TagForm(ModelForm):
-    name = CharField(max_length=100, required=True)
+    name = CharField(max_length=100, required=True, widget=TextInput(attrs={'autocomplete': 'off'}))
     color = ModelChoiceField(Color.objects, initial=Color.objects.get(name="Gray"), required=True)
 
     class Meta:

@@ -12,4 +12,6 @@ urlpatterns = [
     path('create/tag/', note_views.CreateTagView.as_view(), name='notetaking-create-tag'),
     path('edit/tag/<pk>', note_views.EditTagView.as_view(), name='notetaking-edit-tag'),
     path('delete_non_pending/', note_views.delete_non_pending, name='notetaking-delete-nonpending'),
+    path('search_pending/', note_views.search_note(True), name='notetaking-search-pending'),
+    path('search_done/', note_views.search_note(False), name='notetaking-search-done'),
 ]
