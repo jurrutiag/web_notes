@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'f5(s8q7=j%yb#kawveq*bf15qn4e!+1wnl^df55j6)n-d-69fc'
+SECRET_KEY = 't%c++x1q-+9b7=dtu0!5jl-!bj82y)4k4uh*^leov_i%387z_2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,4 +128,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'notetaking-home'
 LOGIN_URL = 'login'
 
-ALLOWED_HOSTS = ['192.168.0.12', 'localhost']
+with open(os.path.join(BASE_DIR, 'notes', 'allowed_hosts.json'), 'r') as f:
+    ALLOWED_HOSTS = json.load(f)['ALLOWED_HOSTS']
+
+# ALLOWED_HOSTS = ['192.168.0.11', 'localhost']
