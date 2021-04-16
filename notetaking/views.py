@@ -10,16 +10,16 @@ from django.contrib import messages
 from django.template import loader
 from django.db.utils import OperationalError, ProgrammingError
 
-try:
-    from notetaking.forms import NoteForm, TagForm, FilterForm
-    from notetaking.models import Note, Tag
+# try:
+from notetaking.forms import NoteForm, TagForm, FilterForm
+from notetaking.models import Note, Tag
 
-except (OperationalError, ProgrammingError):
-    Note = None
-    Tag = None
-    NoteForm = None
-    TagForm = None
-    FilterForm = None
+# except (OperationalError, ProgrammingError):
+#     Note = None
+#     Tag = None
+#     NoteForm = None
+#     TagForm = None
+#     FilterForm = None
 
 
 

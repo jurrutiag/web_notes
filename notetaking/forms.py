@@ -1,9 +1,5 @@
 from django.forms import CharField, ModelForm, Textarea, ModelChoiceField, TextInput, Form
-try:
-    from notetaking.models import Note, Tag, Color
-
-except:
-    pass
+from notetaking.models import Note, Tag, Color
 
 from django.core.exceptions import NON_FIELD_ERRORS
 
