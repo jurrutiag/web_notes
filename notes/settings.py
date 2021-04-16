@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_NOTES_SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -128,7 +128,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'notetaking-home'
 LOGIN_URL = 'login'
 
-with open(os.path.join(BASE_DIR, 'notes', 'allowed_hosts.json'), 'r') as f:
-    ALLOWED_HOSTS = json.load(f)['ALLOWED_HOSTS']
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# with open(os.path.join(BASE_DIR, 'notes', 'allowed_hosts.json'), 'r') as f:
+#     ALLOWED_HOSTS = json.load(f)['ALLOWED_HOSTS']
 
 # ALLOWED_HOSTS = ['192.168.0.11', 'localhost']

@@ -11,7 +11,7 @@
             </form>
         </div>
         <div class="row justify-content-around justify-content-md-start">
-            <a href="{% url 'notetaking-create-tag' %}" class="btn btn-light border border-dark col-md-2 mr-md-3 ml-md-3 col-5">Create Tag</a>
+            <a href="{% url 'notetaking-create-tag' %}" class="btn btn-light border border-dark mr-md-3 ml-md-3 col-5">Create Tag</a>
             <a href="{% url 'notetaking-edit-tag' form.tag.value %}" class="btn btn-light border border-dark col-md-2 col-5">Edit Tag</a>
         </div>
         <br>
@@ -22,3 +22,9 @@
         </div>
     </div>
 {% endblock content %}
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-5"></div>
+    <div class="col-5"></div>
+</div>
