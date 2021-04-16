@@ -8,13 +8,13 @@ from django.shortcuts import redirect, reverse, Http404, HttpResponse
 from django.http import JsonResponse
 from django.contrib import messages
 from django.template import loader
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, ProgrammingError
 
 try:
     from notetaking.forms import NoteForm, TagForm, FilterForm
     from notetaking.models import Note, Tag
 
-except OperationalError:
+except (OperationalError, ProgrammingError):
     Note = None
     Tag = None
     NoteForm = None
