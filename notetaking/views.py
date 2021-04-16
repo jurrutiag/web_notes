@@ -2,12 +2,25 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, ListView, UpdateView
-from notetaking.forms import NoteForm, TagForm, FilterForm
-from notetaking.models import Note, Tag
+
+
 from django.shortcuts import redirect, reverse, Http404, HttpResponse
 from django.http import JsonResponse
 from django.contrib import messages
 from django.template import loader
+from django.db.utils import OperationalError
+
+try:
+    from notetaking.forms import NoteForm, TagForm, FilterForm
+    from notetaking.models import Note, Tag
+
+except OperationalError:
+    Note = None
+    Tag = None
+    NoteForm = None
+    TagForm = None
+    FilterForm = None
+
 
 
 def get_messages(form, request, error=True):

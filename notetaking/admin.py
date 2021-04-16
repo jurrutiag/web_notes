@@ -1,5 +1,9 @@
 from django.contrib import admin
-from notetaking.models import Note, Color, Tag
+try:
+    from notetaking.models import Note, Tag, Color
+
+except:
+    pass
 
 admin.site.register(Note)
 admin.site.register(Color)

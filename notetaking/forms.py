@@ -1,6 +1,10 @@
 from django.forms import CharField, ModelForm, Textarea, ModelChoiceField, TextInput, Form
-from django.contrib.auth.models import User
-from notetaking.models import Note, Tag, Color
+try:
+    from notetaking.models import Note, Tag, Color
+
+except:
+    pass
+
 from django.core.exceptions import NON_FIELD_ERRORS
 
 
