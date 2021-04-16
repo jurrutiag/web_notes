@@ -17,7 +17,7 @@ class NoteForm(ModelForm):
             self.last_tag = self.last_note.tag
 
         else:
-            self.last_tag = Tag.objects.get("No tag")
+            self.last_tag = Tag.objects.get(name="No tag")
 
         self.fields['tag'].initial = self.last_tag
 
